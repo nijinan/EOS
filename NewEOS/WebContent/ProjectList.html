@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Project List</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+	<style type="text/css">
+        td
+        {
+        	height:		40px;
+        	color:		grey;
+        	font-size:	16px;
+        	font-weight:bold;
+        }
+        td.title
+        {
+        	width: 		220px;
+        }
+    </style>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-fixed-top navbar-inverse">
+    	<div class="navbar-header">
+		    <a class="navbar-brand" href="index.html">EOS</a>
+		</div>
+      	<div class="container">
+	        <div class="navbar-collapse collapse">
+	          <ul class="nav navbar-nav">
+	            <li><a href="#">Home</a></li>
+	            <li class="active"><a href="ProjectList.html">OSS Projects</a></li>
+	            <li><a href="#about">About</a></li>
+	            <li><a href="#contact">Contact</a></li>
+	          </ul>
+	
+	          
+	          <ul class="nav navbar-nav navbar-right">
+	            <li><a href="">Default</a></li>
+	          </ul>
+	        </div><!--/.nav-collapse -->
+      	</div>
+    </div>
+
+    <div class="container">
+	
+		<div class="page-header">
+			<h1><small>Project List</small></h1>
+	  		<h1 id="name"> </h1>
+		</div>
+		
+		<ul class="list-group" id="projectList">
+		</ul>
+		
+		
+	</div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery-1.10.2.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    function loadList(){
+    	var project;
+    	
+    	
+    	//得到所有资源的情况
+    	$("#name").html("All Projects");
+    	$.post("GetProjectList",null,function (data){
+    		//alert(data);
+    		projects = $.parseJSON(data);
+    		for(i=0; i<projects.length; i++) {
+    			htmlString = "<li class=\"list-group-item\"><a href='ProjectDetails.html?uuid="+projects[i].uuid+"'>"+projects[i].name+"</a></li>";
+    			$("#projectList").append(htmlString);
+    		}
+
+    	});	
+
+    }
+    loadList();
+    
+    </script>
+  </body>
+</html>
