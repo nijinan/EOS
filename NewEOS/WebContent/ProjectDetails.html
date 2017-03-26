@@ -61,14 +61,14 @@
 			<h1><small>Project Information</small></h1>
 	  		<h1 id="name"> </h1>
 		</div>
-		
-		
+
+
 		<div class="panel panel-info">
-		  <!-- Default panel contents -->
-		  <div class="panel-heading">Project Summary</div>
-		  <div class="panel-body">
-		    <p id="desc">...</p>
-		  </div>
+		  <!--&lt;!&ndash; Default panel contents &ndash;&gt;-->
+		  <!--<div class="panel-heading">Project Summary</div>-->
+		  <!--<div class="panel-body">-->
+		    <!--<p id="desc">...</p>-->
+		  <!--</div>-->
 		
 		  <!-- Table -->
 		  <table class="table">
@@ -81,15 +81,19 @@
 				<td><a  id="hostUrl" href="#"></a></td>
 			</tr>
 			<tr>
-				<td class = title>&nbsp;&nbsp;Code Location:</td>
+				<td class = title>&nbsp;&nbsp;Code Archive:</td>
 				<td><a  id="codeurl" href="#">Unknown</a></td>
 			</tr>
+		  <tr>
+			  <td class = title>&nbsp;&nbsp;Code Archive:</td>
+			  <td><a  id="codeurl" href="#">Unknown</a></td>
+		  </tr>
 			<tr>
-				<td class = title>&nbsp;&nbsp;Mailing List:</td>
+				<td class = title>&nbsp;&nbsp;Mailing List Archive:</td>
 				<td><a  id="mailurl" href="#">Unknown</a></td>
 			</tr>
 						<tr>
-				<td class = title>&nbsp;&nbsp;Issue Tracker:</td>
+				<td class = title>&nbsp;&nbsp;Issue Tracker Archive:</td>
 				<td><a  id="bugurl" href="#">Unknown</a></td>
 			</tr>
 		  </table>
@@ -113,11 +117,11 @@
 		<div id="bugdata" class="panel panel-default">
 		  <div id="bugheader" class="panel-heading">Bugs</div>
 		  <div class="panel-body" id="bugdes"></div>
-		</div>
-		<div id="blogdata" class="panel panel-default">
-		  <div id="blogheader" class="panel-heading">Blog Articles</div>
-		  <div class="panel-body" id="blogdes"></div>
-		</div>
+		<!--</div>-->
+		<!--<div id="blogdata" class="panel panel-default">-->
+		  <!--<div id="blogheader" class="panel-heading">Blog Articles</div>-->
+		  <!--<div class="panel-body" id="blogdes"></div>-->
+		<!--</div>-->
 	</div>
 	
 	
@@ -150,8 +154,8 @@
     		}
     		
             $("#name").html(project.name);
-            $("#desc").html(project.description);
-            $("#programmingLanguage").html(project.programmingLanguage);
+            //$("#desc").html(project.description);
+            //$("#programmingLanguage").html(project.programmingLanguage);
             $("#hostUrl").html(project.hostUrl);
             $("#hostUrl").attr("href", project.hostUrl);
             if (codeindex > -1){
@@ -245,25 +249,25 @@
 	    		}
 			}
     	});
-    	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=RelativeWeb",null,function (data){
-    		//alert(data.split("|")[1]);
-    		//task = $.parseJSON(data);
-    		//alert(data);
-			if(data == 'null'){$("#blogdes").html("Not Collected")}
-			else {
-	    		task = $.parseJSON(data.split("|")[0]);
-	    		num = data.split("|")[1];
-	    		$("#blogdes").append("<a href=\"ftp://192.168.4.9/Upload/EOS/"+uuid+"/RelativeWeb/\"><span class=\"badge\">"+num+"</span></a>");
-	    		$("#blogdes").append("&nbsp;&nbsp;&nbsp;Files Collected");
-	    		if (task.status == 1) {
-		    		$("#blogdata").attr("class", "panel panel-primary");
-		    		$("#blogdes").append("<span class=\"label label-success pull-right\">Collected at&nbsp;&nbsp;&nbsp;<i>"+task.finishTime+"</i></span>");
-	    		} else {
-		    		$("#blogdata").attr("class", "panel panel-danger");
-		    		$("#blogdes").append("<span class=\"label label-warning pull-right\">"+"Task Aborted"+"</span>");
-	    		}
-			}
-    	});
+//    	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=RelativeWeb",null,function (data){
+//    		//alert(data.split("|")[1]);
+//    		//task = $.parseJSON(data);
+//    		//alert(data);
+//			if(data == 'null'){$("#blogdes").html("Not Collected")}
+//			else {
+//	    		task = $.parseJSON(data.split("|")[0]);
+//	    		num = data.split("|")[1];
+//	    		$("#blogdes").append("<a href=\"ftp://192.168.4.9/Upload/EOS/"+uuid+"/RelativeWeb/\"><span class=\"badge\">"+num+"</span></a>");
+////	    		$("#blogdes").append("&nbsp;&nbsp;&nbsp;Files Collected");
+//	    		if (task.status == 1) {
+//		    		$("#blogdata").attr("class", "panel panel-primary");
+//		    		$("#blogdes").append("<span class=\"label label-success pull-right\">Collected at&nbsp;&nbsp;&nbsp;<i>"+task.finishTime+"</i></span>");
+//	    		} else {
+//		    		$("#blogdata").attr("class", "panel panel-danger");
+//		    		$("#blogdes").append("<span class=\"label label-warning pull-right\">"+"Task Aborted"+"</span>");
+//	    		}
+//			}
+//    	});
     }
     loadProjectInfo();
     </script>
