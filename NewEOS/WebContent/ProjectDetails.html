@@ -61,14 +61,14 @@
 			<h1><small>Project Information</small></h1>
 	  		<h1 id="name"> </h1>
 		</div>
-
-
+		
+		
 		<div class="panel panel-info">
-		  <!--&lt;!&ndash; Default panel contents &ndash;&gt;-->
-		  <!--<div class="panel-heading">Project Summary</div>-->
-		  <!--<div class="panel-body">-->
-		    <!--<p id="desc">...</p>-->
-		  <!--</div>-->
+		  <!-- Default panel contents -->
+		  <div class="panel-heading">Project Summary</div>
+		  <div class="panel-body">
+		    <p id="desc">...</p>
+		  </div>
 		
 		  <!-- Table -->
 		  <table class="table">
@@ -81,19 +81,15 @@
 				<td><a  id="hostUrl" href="#"></a></td>
 			</tr>
 			<tr>
-				<td class = title>&nbsp;&nbsp;Code Archive:</td>
+				<td class = title>&nbsp;&nbsp;Code Location:</td>
 				<td><a  id="codeurl" href="#">Unknown</a></td>
 			</tr>
-		  <tr>
-			  <td class = title>&nbsp;&nbsp;Code Archive:</td>
-			  <td><a  id="codeurl" href="#">Unknown</a></td>
-		  </tr>
 			<tr>
-				<td class = title>&nbsp;&nbsp;Mailing List Archive:</td>
+				<td class = title>&nbsp;&nbsp;Mailing List:</td>
 				<td><a  id="mailurl" href="#">Unknown</a></td>
 			</tr>
 						<tr>
-				<td class = title>&nbsp;&nbsp;Issue Tracker Archive:</td>
+				<td class = title>&nbsp;&nbsp;Issue Tracker:</td>
 				<td><a  id="bugurl" href="#">Unknown</a></td>
 			</tr>
 		  </table>
@@ -103,25 +99,21 @@
 		
 		<h3>Collected Data</h3><br>
 		<div id="codedata" class="panel panel-default">
-		  <div id="codeheader" class="panel-heading">Source Code</div>
+		  <div id="codeheader" class="panel-heading">Git</div>
 		  <div class="panel-body" id="codedes"></div>
 		</div>
 		<div id="docdata" class="panel panel-default">
-		  <div id="docheader" class="panel-heading">Official Documentation</div>
+		  <div id="docheader" class="panel-heading">MainSite</div>
 		  <div class="panel-body" id="docdes"></div>
 		</div>
 		<div id="maildata" class="panel panel-default">
-		  <div id="mailheader" class="panel-heading">Mails</div>
+		  <div id="mailheader" class="panel-heading">Mbox</div>
 		  <div class="panel-body" id="maildes"></div>
 		</div>
 		<div id="bugdata" class="panel panel-default">
-		  <div id="bugheader" class="panel-heading">Bugs</div>
+		  <div id="bugheader" class="panel-heading">JiraIssue</div>
 		  <div class="panel-body" id="bugdes"></div>
-		<!--</div>-->
-		<!--<div id="blogdata" class="panel panel-default">-->
-		  <!--<div id="blogheader" class="panel-heading">Blog Articles</div>-->
-		  <!--<div class="panel-body" id="blogdes"></div>-->
-		<!--</div>-->
+		</div>
 	</div>
 	
 	
@@ -137,43 +129,46 @@
     }
     var project;
     var uuid = getParameterByName("uuid");
-
     function loadProjectInfo(){
     	var project;
+    	var resources;
     	$.post("GetProjectInfo?uuid=" + uuid,null,function (data){
-    		project = $.parseJSON(data);
+    		project = $.parseJSON(data.split("|")[0]);
+    		resources = $.parseJSON(data.split("|")[1]);
     		//alert(project.name)
 			var codeindex = -1;
     		var mailindex = -1;
     		var bugindex = -1;
-    		
-    		for(i=0; i<project.resources.length; i++) {
-    			if(project.resources[i].type == 'MailingList') mailindex = i;
-    			if(project.resources[i].type == 'SourceCode') codeindex = i;
-    			if(project.resources[i].type == 'IssueTracker') bugindex = i;
+    		var i;
+    		for(i=0; i<resources.length; i++) {
+    			
+    			if(resources[i].resourceType == 'Mbox') mailindex = i;
+    			if(resources[i].resourceType == 'Git') codeindex = i;
+    			if(resources[i].resourceType == 'JiraIssue') bugindex = i;
     		}
     		
             $("#name").html(project.name);
-            //$("#desc").html(project.description);
-            //$("#programmingLanguage").html(project.programmingLanguage);
+            $("#desc").html(project.description);
+            $("#programmingLanguage").html(project.programmingLanguage);
             $("#hostUrl").html(project.hostUrl);
             $("#hostUrl").attr("href", project.hostUrl);
             if (codeindex > -1){
-	            $("#codeurl").html(project.resources[codeindex].urlListString);
-	            $("#codeurl").attr("href", project.resources[codeindex].urlListString);
+	            $("#codeurl").html(resources[codeindex].download.split(";")[0]);
+	            $("#codeurl").attr("href", resources[codeindex].download.split(";")[0]);
             }
             if (mailindex > -1){
-	            $("#mailurl").html(project.resources[mailindex].urlListString);
-	            $("#mailurl").attr("href", project.resources[mailindex].urlListString);
+	            $("#mailurl").html(resources[mailindex].entrys);
+	            $("#mailurl").attr("href", resources[mailindex].entrys);
             }
             if (bugindex > -1){
-	            $("#bugurl").html(project.resources[bugindex].urlListString);
-	            $("#bugurl").attr("href", project.resources[bugindex].urlListString);
+	            $("#bugurl").html(resources[bugindex].entrys);
+	            $("#bugurl").attr("href", resources[bugindex].entrys);
             }
     	});
     	var task;
     	var num = 0;
-    	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=SourceCode",null,function (data){
+    	var size = 0;
+    	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=Git",null,function (data){
     		//alert(data.split("|")[1]);
     		//task = $.parseJSON(data);
     		//alert(data);
@@ -181,37 +176,15 @@
 			else {
 	    		task = $.parseJSON(data.split("|")[0]);
 	    		num = data.split("|")[1];
-	    		$("#codedes").append("<a href=\"ftp://192.168.4.9/Upload/EOS/"+uuid+"/SourceCode/\"><span class=\"badge\">"+num+"</span></a>");
-	    		$("#codedes").append("&nbsp;&nbsp;&nbsp;Files Collected");
-	    		if (task.status == 1) {
-		    		$("#codedata").attr("class", "panel panel-primary");
-		    		$("#codedes").append("<span class=\"label label-success pull-right\">Collected at&nbsp;&nbsp;&nbsp;<i>"+task.finishTime+"</i></span>");
-	    		} else {
-		    		$("#codedata").attr("class", "panel panel-danger");
-		    		$("#codedes").append("<span class=\"label label-warning pull-right\">"+"Task Aborted"+"</span>");
-	    		}
+	    		size = Math.round(data.split("|")[2]/1024/1024);
+	    		$("#codedes").append("<span class=\"badge\">"+num+"</span>");
+	    		$("#codedes").append("&nbsp;&nbsp;&nbsp;Files Collected   total Size :");
+	    		$("#codedes").append("<span class=\"badge\">"+size+" MB</span>");
+			
 			}
     	});
-    	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=Documentation",null,function (data){
-    		//alert(data.split("|")[1]);
-    		//task = $.parseJSON(data);
-    		//alert(data);
-			if(data == 'null'){$("#docdes").html("Not Collected")}
-			else {
-	    		task = $.parseJSON(data.split("|")[0]);
-	    		num = data.split("|")[1];
-	    		$("#docdes").append("<a href=\"ftp://192.168.4.9/Upload/EOS/"+uuid+"/Documentation/\"><span class=\"badge\">"+num+"</span></a>");
-	    		$("#docdes").append("&nbsp;&nbsp;&nbsp;Files Collected");
-	    		if (task.status == 1) {
-		    		$("#docdata").attr("class", "panel panel-primary");
-		    		$("#docdes").append("<span class=\"label label-success pull-right\">Collected at&nbsp;&nbsp;&nbsp;<i>"+task.finishTime+"</i></span>");
-	    		} else {
-		    		$("#docdata").attr("class", "panel panel-danger");
-		    		$("#docdes").append("<span class=\"label label-warning pull-right\">"+"Task Aborted"+"</span>");
-	    		}
-			}
-    	});
-    	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=MailingList",null,function (data){
+
+    	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=Mbox",null,function (data){
     		//alert(data.split("|")[1]);
     		//task = $.parseJSON(data);
     		//alert(data);
@@ -219,18 +192,13 @@
 			else {
 	    		task = $.parseJSON(data.split("|")[0]);
 	    		num = data.split("|")[1];
+	    		size = Math.round(data.split("|")[2]/1024/1024);
 	    		$("#maildes").append("<span class=\"badge\">"+num+"</span>");
-	    		$("#maildes").append("&nbsp;&nbsp;&nbsp;Records Collected");
-	    		if (task.status == 1) {
-		    		$("#maildata").attr("class", "panel panel-primary");
-		    		$("#maildes").append("<span class=\"label label-success pull-right\">Collected at&nbsp;&nbsp;&nbsp;<i>"+task.finishTime+"</i></span>");
-	    		} else {
-		    		$("#maildata").attr("class", "panel panel-danger");
-		    		$("#maildes").append("<span class=\"label label-warning pull-right\">"+"Task Aborted"+"</span>");
-	    		}
+	    		$("#maildes").append("&nbsp;&nbsp;&nbsp;Files Collected   total Size :");
+	    		$("#maildes").append("<span class=\"badge\">"+size+" MB</span>");
 			}
     	});
-    	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=IssueTracker",null,function (data){
+    	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=JiraIssue",null,function (data){
     		//alert(data.split("|")[1]);
     		//task = $.parseJSON(data);
     		//alert(data);
@@ -238,36 +206,13 @@
 			else {
 	    		task = $.parseJSON(data.split("|")[0]);
 	    		num = data.split("|")[1];
+	    		size = Math.round(data.split("|")[2]/1024/1024);
 	    		$("#bugdes").append("<span class=\"badge\">"+num+"</span>");
-	    		$("#bugdes").append("&nbsp;&nbsp;&nbsp;Records Collected");
-	    		if (task.status == 1) {
-		    		$("#bugdata").attr("class", "panel panel-primary");
-		    		$("#bugdes").append("<span class=\"label label-success pull-right\">Collected at&nbsp;&nbsp;&nbsp;<i>"+task.finishTime+"</i></span>");
-	    		} else {
-		    		$("#bugdata").attr("class", "panel panel-danger");
-		    		$("#bugdes").append("<span class=\"label label-warning pull-right\">"+"Task Aborted"+"</span>");
-	    		}
+	    		$("#bugdes").append("&nbsp;&nbsp;&nbsp;Files Collected   total Size :");
+	    		$("#bugdes").append("<span class=\"badge\">"+size+" MB</span>");
 			}
     	});
-//    	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=RelativeWeb",null,function (data){
-//    		//alert(data.split("|")[1]);
-//    		//task = $.parseJSON(data);
-//    		//alert(data);
-//			if(data == 'null'){$("#blogdes").html("Not Collected")}
-//			else {
-//	    		task = $.parseJSON(data.split("|")[0]);
-//	    		num = data.split("|")[1];
-//	    		$("#blogdes").append("<a href=\"ftp://192.168.4.9/Upload/EOS/"+uuid+"/RelativeWeb/\"><span class=\"badge\">"+num+"</span></a>");
-////	    		$("#blogdes").append("&nbsp;&nbsp;&nbsp;Files Collected");
-//	    		if (task.status == 1) {
-//		    		$("#blogdata").attr("class", "panel panel-primary");
-//		    		$("#blogdes").append("<span class=\"label label-success pull-right\">Collected at&nbsp;&nbsp;&nbsp;<i>"+task.finishTime+"</i></span>");
-//	    		} else {
-//		    		$("#blogdata").attr("class", "panel panel-danger");
-//		    		$("#blogdes").append("<span class=\"label label-warning pull-right\">"+"Task Aborted"+"</span>");
-//	    		}
-//			}
-//    	});
+
     }
     loadProjectInfo();
     </script>

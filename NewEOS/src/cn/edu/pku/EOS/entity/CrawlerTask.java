@@ -1,7 +1,10 @@
 package cn.edu.pku.EOS.entity;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.UUID;
+
+import cn.edu.pku.EOS.DAO.ProjectDAO;
 
 public class CrawlerTask {
 
@@ -10,12 +13,14 @@ public class CrawlerTask {
 	public static final int ERROR = -1;
 	public static final int IN_PROGRESS = 2;
 	
-	private String uuid = UUID.randomUUID().toString();
+	private String uuid;
 	private String projectUuid;
-	private String crawlerNode;
+	private String crawlerNode = "127.0.0.1";
 	private String resourceType;
 	private Date startTime = new Date();
 	private Date finishTime = null;
+	private String entrys = "";
+	private String download = "";
 	private int status = WAITING;
 	
 	public CrawlerTask(){}
@@ -23,6 +28,7 @@ public class CrawlerTask {
 	public CrawlerTask(Project project, String resoucetype) {
 		this.projectUuid = project.getUuid();
 		this.resourceType = resoucetype;
+		uuid = UUID.randomUUID().toString();
 	}
 	public String getUuid() {
 		return uuid;
@@ -67,4 +73,18 @@ public class CrawlerTask {
 		this.status = status;
 	}
 
+
+	public String getEntrys() {
+		return entrys;
+	}
+
+	public void setEntrys(String entrys) {
+		this.entrys = entrys;
+	}
+	public String getDownload(){
+		return download;
+	}
+	public void setDownload(String download){
+		this.download = download;
+	}
 }

@@ -31,38 +31,38 @@ public class TaskBusiness {
 	 * @return
 	 */
 	public static int checkTaskStatus(String taskuuid) {
-		CrawlerTask crawlerTask;
-		try {
-			crawlerTask = CrawlerTaskDao.getTaskByUuid(taskuuid);
-		} catch (SQLException e) {
-			logger.info("db error: retrieving CrawlerTask failed!");
-			e.printStackTrace();
-			return -1;
-		}
-		if (crawlerTask.getStatus() != 0) {
-			return crawlerTask.getStatus();
-		}
-		List<KVPair> params = new ArrayList<KVPair>();
-		params.add(new KVPair("taskuuid", taskuuid));
-		try {
-			int result = Integer.parseInt(MessageSender.sendCommand(crawlerTask.getCrawlerNode(), NodeManager.getCheckTaskCommand(), params));
-			if (result != CrawlerTask.ERROR) {
-				return result;
-			} else {
-				CrawlerTaskDao.updateTaskStatus(taskuuid, CrawlerTask.ERROR, null);
-			}
-		} catch (CrawlerNodeNotRespondingException e) {
-			e.printStackTrace();
-			try {
-				CrawlerTaskDao.updateTaskStatus(taskuuid, CrawlerTask.ERROR, null);
-			} catch (SQLException e1) {
-				logger.info("db error: cannot report error task!");
-				e1.printStackTrace();
-			}
-		} catch (SQLException e) {
-			logger.info("db error: cannot report error task!");
-			e.printStackTrace();
-		}
+//		CrawlerTask crawlerTask;
+//		try {
+//			crawlerTask = CrawlerTaskDao.getTaskByUuid(taskuuid);
+//		} catch (SQLException e) {
+//			logger.info("db error: retrieving CrawlerTask failed!");
+//			e.printStackTrace();
+//			return -1;
+//		}
+//		if (crawlerTask.getStatus() != 0) {
+//			return crawlerTask.getStatus();
+//		}
+//		List<KVPair> params = new ArrayList<KVPair>();
+//		params.add(new KVPair("taskuuid", taskuuid));
+//		try {
+//			int result = Integer.parseInt(MessageSender.sendCommand(crawlerTask.getCrawlerNode(), NodeManager.getCheckTaskCommand(), params));
+//			if (result != CrawlerTask.ERROR) {
+//				return result;
+//			} else {
+//				CrawlerTaskDao.updateTaskStatus(taskuuid, CrawlerTask.ERROR, null);
+//			}
+//		} catch (CrawlerNodeNotRespondingException e) {
+//			e.printStackTrace();
+//			try {
+//				CrawlerTaskDao.updateTaskStatus(taskuuid, CrawlerTask.ERROR, null);
+//			} catch (SQLException e1) {
+//				logger.info("db error: cannot report error task!");
+//				e1.printStackTrace();
+//			}
+//		} catch (SQLException e) {
+//			logger.info("db error: cannot report error task!");
+//			e.printStackTrace();
+//		}
 		return CrawlerTask.ERROR;
 	}
 

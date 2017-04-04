@@ -51,6 +51,8 @@ public class DAOUtils {
 		DbUtils.close(connection2);
 		return result;
 	}
+
+	
 //	/**
 //	 * @author 张灵箫
 //	 * 异步执行update语句
