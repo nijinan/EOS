@@ -101,34 +101,18 @@
 		<div id="codedata" class="panel panel-default">
 		  <div id="codeheader" class="panel-heading">Git</div>
 		  <div class="panel-body" id="codedes"></div>
-		  <div class="panel-body">
-		  <button type="button" class="btn btn-primary" onclick="compress(this);" id="code" >Compress</button>
-		  <button type="button" class="btn btn-primary" disabled="disabled" id="code-download" url="" onclick="download(this);" >Download</button>
-		  </div>
 		</div>
 		<div id="docdata" class="panel panel-default">
 		  <div id="docheader" class="panel-heading">MainSite</div>
 		  <div class="panel-body" id="docdes"></div>
-		  <div class="panel-body">
-		  <button type="button" class="btn btn-primary" onclick="compress(this);" id="doc" >Compress</button>
-		  <button type="button" class="btn btn-primary" disabled="disabled" id="doc-download" url="" onclick="download(this);">Download</button>
-		  </div>		  
 		</div>
 		<div id="maildata" class="panel panel-default">
 		  <div id="mailheader" class="panel-heading">Mbox</div>
 		  <div class="panel-body" id="maildes"></div>
-		  <div class="panel-body">
-		  <button type="button" class="btn btn-primary" onclick="compress(this);" id="mail" >Compress</button>
-		  <button type="button" class="btn btn-primary" disabled="disabled" id="mail-download" url="" onclick="download(this);" >Download</button>
-		  </div>		  
 		</div>
 		<div id="bugdata" class="panel panel-default">
 		  <div id="bugheader" class="panel-heading">JiraIssue</div>
 		  <div class="panel-body" id="bugdes"></div>
-		  <div class="panel-body">
-		  <button type="button" class="btn btn-primary" onclick="compress(this);" id="bug" >Compress</button>
-		  <button type="button" class="btn btn-primary" onclick="download(this);"  disabled="disabled" id="bug-download" url="">Download</button>
-		  </div>		  
 		</div>
 	</div>
 	
@@ -137,50 +121,24 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script>
-    
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
             results = regex.exec(location.search);
         return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
-	var project;
-	var resources;
+    var project;
     var uuid = getParameterByName("uuid");
-	var codeindex = -1;
-	var mailindex = -1;
-	var bugindex = -1;
-	
-    
-    function compress(obj){
-    	var id = obj.id;
-    	var filepath = getResourcePath(id);
-    	$.post("GetCrawlerTaskZipPack?filepath="+filepath,null,function(url){
-    		alert(url);
-    		$("#"+id+"-download").removeAttr("disabled");
-    		$("#"+id+"-download").attr("onclick","window.location.href="+"'"+"DownloadZip?filepath="+url+"'");
-    		
-    	});
-    }
-    
-    function download(obj){
-    	var s = obj.id;
-    	s = $("#"+s).attr("url");
-    	$.post("DownloadZip?filepath="+s,null,null);
-    }
-    
-    
-   	function getResourcePath(type){
-   		if (type == "code") return resources[codeindex].download.split(";")[0];
-   		if (type == "bug") return resources[bugindex].download.split(";")[0];
-   		if (type == "mail") return resources[mailindex].download.split(";")[0];
-   	}
-    
     function loadProjectInfo(){
+    	var project;
+    	var resources;
     	$.post("GetProjectInfo?uuid=" + uuid,null,function (data){
     		project = $.parseJSON(data.split("|")[0]);
     		resources = $.parseJSON(data.split("|")[1]);
     		//alert(project.name)
+			var codeindex = -1;
+    		var mailindex = -1;
+    		var bugindex = -1;
     		var i;
     		for(i=0; i<resources.length; i++) {
     			

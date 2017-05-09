@@ -93,4 +93,25 @@ xmlns:web="http://java.sun.com/xml/ns/javaee"
     <servlet-name>GetCrawlerTaskInfo</servlet-name>
     <url-pattern>/GetCrawlerTaskInfo</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>GetCrawlerTaskZipPack</display-name>
+    <servlet-name>GetCrawlerTaskZipPack</servlet-name>
+    <servlet-class>cn.edu.pku.EOS.servlet.GetCrawlerTaskZipPack</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetCrawlerTaskZipPack</servlet-name>
+    <url-pattern>/GetCrawlerTaskZipPack</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <description></description>
+    <display-name>DownloadZip</display-name>
+    <servlet-name>DownloadZip</servlet-name>
+    <servlet-class>cn.edu.pku.EOS.servlet.DownloadZip</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DownloadZip</servlet-name>
+    <url-pattern>/DownloadZip</url-pattern>
+  </servlet-mapping>
 </web-app>

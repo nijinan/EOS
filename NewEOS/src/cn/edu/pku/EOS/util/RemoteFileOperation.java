@@ -43,7 +43,9 @@ public class RemoteFileOperation {
 		   return null;   
 		  }   
 		  String fileName = remoteFile.getName();   
+		  //fileName = "asd";
 		  File localFile = new File(localDir+File.separator+fileName);   
+		  //if (!localFile.exists()) localFile.mkdirs();
 		  in = new BufferedInputStream(new SmbFileInputStream(remoteFile));   
 		  out = new BufferedOutputStream(new FileOutputStream(localFile));   
 		  byte[] buffer = new byte[1024];
@@ -120,8 +122,9 @@ public class RemoteFileOperation {
 	    }       
 	 }   
 	public static void main(String args[]) throws MalformedURLException {
-		SmbFile file = new SmbFile("smb://192.168.4.9/upload/EOS/1572204a-481f-4244-8907-0869ee228d27/SourceCode/");
-		System.out.println(countFiles(file));
+		SmbFile file = new SmbFile("smb://njn:woxnsk!1537@192.168.4.244/Apache/Jira.txt");
+		//System.out.println(countFiles(file));
+		smbGet("smb://njn:woxnsk!1537@192.168.4.244/Apache/abdera.rar","E:/");
 	}
 
 

@@ -1,6 +1,11 @@
 package cn.edu.pku.EOS.servlet;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -16,17 +21,18 @@ import cn.edu.pku.EOS.business.ProjectBusiness;
 import cn.edu.pku.EOS.business.TaskBusiness;
 import cn.edu.pku.EOS.entity.CrawlerTask;
 import cn.edu.pku.EOS.entity.FileNum;
+import cn.edu.pku.EOS.util.ZipUtil;
 
 /**
  * Servlet implementation class GetCrawlerTaskInfo
  */
-public class GetCrawlerTaskInfo extends HttpServlet {
+public class GetCrawlerTaskZipPack extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetCrawlerTaskInfo() {
+    public GetCrawlerTaskZipPack() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -42,26 +48,30 @@ public class GetCrawlerTaskInfo extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String puuid = request.getParameter("puuid");
-		String type = request.getParameter("type");
-		CrawlerTask ct;
-		try {
-			ct = CrawlerTaskDao.getTaskByProjectAndType(puuid, type);
-			String jsonString = new Gson().toJson(ct);
-			int dataNum = 0;
-			if (ct != null) {
-				//dataNum = ProjectBusiness.getDataNum(puuid, type);
-				FileNum fn = DAOUtils.getResult(FileNum.class, "select * from "+ ct.getResourceType() + " where uuid = ?",ct.getUuid()).get(0);
-				jsonString += "|" + fn.getFileNum();
-				jsonString += "|" + fn.getFileSize();
-			}
-			response.setContentType("text/plain");  
-		    response.getWriter().print(jsonString);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		//String puuid = request.getParameter("puuid");
+		String filepath = request.getParameter("filepath");
+		downloadZip(request, response, filepath);
 	}
-
+	private void downloadZip(HttpServletRequest request,
+			HttpServletResponse response, String filepath) throws FileNotFoundException, IOException{
+		String tempdir = "E:/";
+		
+		//File sourcefile = new File(filepath);
+		String projectName = "";
+//		if (!sourcefile.exists()){
+//			System.out.println("project "+ projectName +" does not exit!"); 
+//			//return;
+//		}
+		projectName = "zoo";
+		String tempfile = tempdir+projectName+".zip";
+		ZipUtil.compress("E:/zookeeper/", tempfile, "utf-8", "download");
+		
+		File file=new File(tempfile);  
+		if(file.exists()){  
+			response.setContentType("text/plain");  
+		    response.getWriter().print(tempfile);
+		}else{  
+			System.out.println("project "+ projectName +" does not exit!");  
+		}  
+	}
 }
