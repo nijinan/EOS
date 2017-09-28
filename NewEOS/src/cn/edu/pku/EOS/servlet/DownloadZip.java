@@ -22,6 +22,8 @@ import cn.edu.pku.EOS.business.TaskBusiness;
 import cn.edu.pku.EOS.entity.CrawlerTask;
 import cn.edu.pku.EOS.entity.FileNum;
 import cn.edu.pku.EOS.util.ZipUtil;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.eclipse.core.runtime.Path;
 
 /**
  * Servlet implementation class GetCrawlerTaskInfo
@@ -50,16 +52,17 @@ public class DownloadZip extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//String puuid = request.getParameter("puuid");
 		String filepath = request.getParameter("filepath");
+		System.out.println(filepath);
 		downloadZip(request, response, filepath);
 	}
 	private void downloadZip(HttpServletRequest request,
 			HttpServletResponse response, String filepath) throws FileNotFoundException, IOException{
 		String tempdir = "E:/";
-		
+		filepath = ZipUtil.zip(filepath,null);
 		File file = new File(filepath);
 		if(file.exists()){  
 			response.setContentType("application/zip");  
-			response.addHeader("Content-Disposition", "attachment;filename="+file.getName()+".zip");  
+			response.addHeader("Content-Disposition", "attachment;filename="+file.getName());
 			byte[] buffer=new byte[1024];  
 			FileInputStream fis=null;  
 			BufferedInputStream bis=null;  

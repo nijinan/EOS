@@ -114,4 +114,37 @@ xmlns:web="http://java.sun.com/xml/ns/javaee"
     <servlet-name>DownloadZip</servlet-name>
     <url-pattern>/DownloadZip</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>DownloadAllZip</display-name>
+    <servlet-name>DownloadAllZip</servlet-name>
+    <servlet-class>cn.edu.pku.EOS.servlet.DownloadAllZip</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DownloadAllZip</servlet-name>
+    <url-pattern>/DownloadAllZip</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>GetDownloadList</display-name>
+    <servlet-name>GetDownloadList</servlet-name>
+    <servlet-class>cn.edu.pku.EOS.servlet.GetDownloadList</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetDownloadList</servlet-name>
+    <url-pattern>/GetDownloadList</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>GetStaticInfo</display-name>
+    <servlet-name>GetStaticInfo</servlet-name>
+    <servlet-class>cn.edu.pku.EOS.servlet.GetStaticInfo</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetStaticInfo</servlet-name>
+    <url-pattern>/GetStaticInfo</url-pattern>
+  </servlet-mapping>
 </web-app>

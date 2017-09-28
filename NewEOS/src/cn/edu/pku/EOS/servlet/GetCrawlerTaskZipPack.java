@@ -64,7 +64,7 @@ public class GetCrawlerTaskZipPack extends HttpServlet {
 //		}
 		projectName = "zoo";
 		String tempfile = tempdir+projectName+".zip";
-		ZipUtil.compress("E:/zookeeper/", tempfile, "utf-8", "download");
+		ZipUtil.zip("E:/zookeeper/", tempfile);
 		
 		File file=new File(tempfile);  
 		if(file.exists()){  

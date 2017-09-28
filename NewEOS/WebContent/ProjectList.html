@@ -20,8 +20,8 @@
     </style>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="../../assets/js/html5shiv.js"></script>
-      <script src="../../assets/js/respond.min.js"></script>
+      	<script src="../../assets/js/html5shiv.js"></script>
+      	<script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
 </head>
 
@@ -67,31 +67,23 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/jquery-1.10.2.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+	<script src="js/myjs.js"></script>
     <script>
-    function getParameterByName(name) {
-        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(location.search);
-        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
 
-    function loadList(){
-    	var project;
-    	
-    	
-    	//得到所有资源的情况
-    	$("#name").html("All Projects");
-    	$.post("GetProjectList",null,function (data){
-    		//alert(data);
-    		projects = $.parseJSON(data);
-    		for(i=0; i<projects.length; i++) {
-    			htmlString = "<li class=\"list-group-item\"><a href='ProjectDetails.html?uuid="+projects[i].uuid+"'>"+projects[i].name+"</a></li>";
-    			$("#projectList").append(htmlString);
-    		}
+	function loadList(){
+		var project;
+		//得到所有资源的情况
+		$("#name").html("All Projects");
+		$.post("GetProjectList",null,function (data){
+			//alert(data);
+			projects = $.parseJSON(data);
+			for(i=0; i<projects.length; i++) {
+				htmlString = "<li class=\"list-group-item\"><a href='ProjectDetails.html?uuid="+projects[i].uuid+"'>"+projects[i].name+"</a></li>";
+				$("#projectList").append(htmlString);
+			}
 
-    	});	
-
-    }
+		});
+	}
     loadList();
     
     </script>

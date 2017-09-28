@@ -102,32 +102,32 @@
 		  <div id="codeheader" class="panel-heading">Git</div>
 		  <div class="panel-body" id="codedes"></div>
 		  <div class="panel-body">
-		  <button type="button" class="btn btn-primary" onclick="compress(this);" id="code" >Compress</button>
-		  <button type="button" class="btn btn-primary" disabled="disabled" id="code-download" url="" onclick="download(this);" >Download</button>
+		  <!--<button type="button" class="btn btn-primary" onclick="compress(this);" id="code" >Compress</button>-->
+		  <button type="button" class="btn btn-primary"  id="code-download" url="COMMIT" onclick="download(this);" >Download</button>
 		  </div>
 		</div>
 		<div id="docdata" class="panel panel-default">
 		  <div id="docheader" class="panel-heading">MainSite</div>
 		  <div class="panel-body" id="docdes"></div>
 		  <div class="panel-body">
-		  <button type="button" class="btn btn-primary" onclick="compress(this);" id="doc" >Compress</button>
-		  <button type="button" class="btn btn-primary" disabled="disabled" id="doc-download" url="" onclick="download(this);">Download</button>
+		  <!--<button type="button" class="btn btn-primary" onclick="compress(this);" id="doc" >Compress</button>-->
+		  <button type="button" class="btn btn-primary" id="doc-download" type="Doc" onclick="download(this);">Download</button>
 		  </div>		  
 		</div>
 		<div id="maildata" class="panel panel-default">
 		  <div id="mailheader" class="panel-heading">Mbox</div>
 		  <div class="panel-body" id="maildes"></div>
 		  <div class="panel-body">
-		  <button type="button" class="btn btn-primary" onclick="compress(this);" id="mail" >Compress</button>
-		  <button type="button" class="btn btn-primary" disabled="disabled" id="mail-download" url="" onclick="download(this);" >Download</button>
+		  <!--<button type="button" class="btn btn-primary" onclick="compress(this);" id="mail" >Compress</button>-->
+		  <button type="button" class="btn btn-primary"  id="mail-download" url="MAIL" onclick="download(this);" >Download</button>
 		  </div>		  
 		</div>
 		<div id="bugdata" class="panel panel-default">
 		  <div id="bugheader" class="panel-heading">JiraIssue</div>
 		  <div class="panel-body" id="bugdes"></div>
 		  <div class="panel-body">
-		  <button type="button" class="btn btn-primary" onclick="compress(this);" id="bug" >Compress</button>
-		  <button type="button" class="btn btn-primary" onclick="download(this);"  disabled="disabled" id="bug-download" url="">Download</button>
+		  <!--<button type="button" class="btn btn-primary" onclick="compress(this);" id="bug" >Compress</button>-->
+		  <button type="button" class="btn btn-primary"  id="bug-download" url="BUG" onclick="download(this);" >Download</button>
 		  </div>		  
 		</div>
 	</div>
@@ -136,14 +136,10 @@
     <script src="js/jquery-1.10.2.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+	<script src="js/myjs.js"></script>
     <script>
     
-    function getParameterByName(name) {
-        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(location.search);
-        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
+
 	var project;
 	var resources;
     var uuid = getParameterByName("uuid");
@@ -159,36 +155,40 @@
     		alert(url);
     		$("#"+id+"-download").removeAttr("disabled");
     		$("#"+id+"-download").attr("onclick","window.location.href="+"'"+"DownloadZip?filepath="+url+"'");
-    		
+
     	});
     }
-    
+
     function download(obj){
     	var s = obj.id;
-    	s = $("#"+s).attr("url");
-    	$.post("DownloadZip?filepath="+s,null,null);
+        var ss = $("#"+s).attr("url");
+        //alert(project);
+        //var filepath = getResourcePath("mail");
+    	window.location=ss+"Details.html?type="+ss+"&project="+project.name+"&puuid="+uuid;
+    	//$.post("DownloadZip?filepath="+s,null,null);
     }
-    
-    
+
+
    	function getResourcePath(type){
    		if (type == "code") return resources[codeindex].download.split(";")[0];
    		if (type == "bug") return resources[bugindex].download.split(";")[0];
    		if (type == "mail") return resources[mailindex].download.split(";")[0];
    	}
-    
+
     function loadProjectInfo(){
     	$.post("GetProjectInfo?uuid=" + uuid,null,function (data){
+
     		project = $.parseJSON(data.split("|")[0]);
     		resources = $.parseJSON(data.split("|")[1]);
     		//alert(project.name)
     		var i;
     		for(i=0; i<resources.length; i++) {
-    			
+
     			if(resources[i].resourceType == 'Mbox') mailindex = i;
     			if(resources[i].resourceType == 'Git') codeindex = i;
     			if(resources[i].resourceType == 'JiraIssue') bugindex = i;
     		}
-    		
+
             $("#name").html(project.name);
             $("#desc").html(project.description);
             $("#programmingLanguage").html(project.programmingLanguage);
@@ -207,22 +207,20 @@
 	            $("#bugurl").attr("href", resources[bugindex].entrys);
             }
     	});
-    	var task;
-    	var num = 0;
-    	var size = 0;
+
     	$.post("GetCrawlerTaskInfo?puuid=" + uuid + "&type=Git",null,function (data){
     		//alert(data.split("|")[1]);
     		//task = $.parseJSON(data);
     		//alert(data);
 			if(data == 'null'){$("#codedes").html("Not Collected")}
 			else {
-	    		task = $.parseJSON(data.split("|")[0]);
-	    		num = data.split("|")[1];
-	    		size = Math.round(data.split("|")[2]/1024/1024);
+	    		var task = $.parseJSON(data.split("|")[0]);
+	    		var num = data.split("|")[1];
+	    		var size = Math.round(data.split("|")[2]/1024/1024);
 	    		$("#codedes").append("<span class=\"badge\">"+num+"</span>");
 	    		$("#codedes").append("&nbsp;&nbsp;&nbsp;Files Collected   total Size :");
 	    		$("#codedes").append("<span class=\"badge\">"+size+" MB</span>");
-			
+
 			}
     	});
 
@@ -232,9 +230,9 @@
     		//alert(data);
 			if(data == 'null'){$("#maildes").html("Not Collected")}
 			else {
-	    		task = $.parseJSON(data.split("|")[0]);
-	    		num = data.split("|")[1];
-	    		size = Math.round(data.split("|")[2]/1024/1024);
+                var task = $.parseJSON(data.split("|")[0]);
+                var num = data.split("|")[1];
+                var size = Math.round(data.split("|")[2]/1024/1024);
 	    		$("#maildes").append("<span class=\"badge\">"+num+"</span>");
 	    		$("#maildes").append("&nbsp;&nbsp;&nbsp;Files Collected   total Size :");
 	    		$("#maildes").append("<span class=\"badge\">"+size+" MB</span>");
@@ -246,9 +244,9 @@
     		//alert(data);
 			if(data == 'null'){$("#bugdes").html("Not Collected")}
 			else {
-	    		task = $.parseJSON(data.split("|")[0]);
-	    		num = data.split("|")[1];
-	    		size = Math.round(data.split("|")[2]/1024/1024);
+                var task = $.parseJSON(data.split("|")[0]);
+                var num = data.split("|")[1];
+                var size = Math.round(data.split("|")[2]/1024/1024);
 	    		$("#bugdes").append("<span class=\"badge\">"+num+"</span>");
 	    		$("#bugdes").append("&nbsp;&nbsp;&nbsp;Files Collected   total Size :");
 	    		$("#bugdes").append("<span class=\"badge\">"+size+" MB</span>");

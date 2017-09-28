@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Project Details</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+	<style type="text/css">
+        td
+        {
+        	height:		40px;
+        	font-size:	15px;
+        	font-weight:bold;
+        }
+        td.title
+        {
+        	width: 		250px;
+        }
+        span.label
+        {
+        	font-size:	12px;
+        }
+        div.panel-heading
+        {
+        	font-size:	15px;
+        	font-weight:bold;
+        }
+    </style>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-fixed-top navbar-inverse">
+    	<div class="navbar-header">
+		    <a class="navbar-brand" href="index.html">EOS</a>
+		</div>
+      	<div class="container">
+	        <div class="navbar-collapse collapse">
+	          <ul class="nav navbar-nav">
+	            <li><a href="#">Home</a></li>
+	            <li class="active"><a href="ProjectList.html">OSS Projects</a></li>
+	            <li><a href="#about">About</a></li>
+	            <li><a href="#contact">Contact</a></li>
+	          </ul>
+	          <ul class="nav navbar-nav navbar-right">
+	            <li><a href="">Default</a></li>
+	          </ul>
+	        </div><!--/.nav-collapse -->
+      	</div>
+    </div>
+
+	<div class="container">
+
+		<h3>Collected Data</h3><br>
+		<div id="main" style="height:400px"></div>
+		<div id="main2" style="height:400px"></div>
+
+		<div class="page-header">
+			<h1><small>Data Information</small></h1>
+	  		<h1 id="name"> </h1>
+		</div>
+		
+		
+		<div class="panel panel-info">
+		  <!-- Default panel contents -->
+		  <div class="panel-heading">Data Download</div>
+		  <div class="panel-body" id = "downloadList" style="padding: 20px">
+			  <!--<table class="table" id = "downloadList">-->
+			  <!--</table>-->
+		  </div>
+
+
+		</div>
+		
+		<hr>
+
+	</div>
+	
+	
+    <script src="js/jquery-1.10.2.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+	<script src="js/myjs.js"></script>
+	<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+
+    <script>
+        var DownLoadFile = function (options) {
+            var config = $.extend(true, { method: 'post' }, {url:"DownloadZip",data:{filepath:options}});
+            var $iframe = $('<iframe id="down-file-iframe" />');
+            var $form = $('<form target="down-file-iframe" method="' + config.method + '" />');
+            $form.attr('action', config.url);
+            for (var key in config.data) {
+                $form.append('<input type="hidden" name="' + key + '" value="' + config.data[key] + '" />');
+            }
+            $iframe.append($form);
+            $(document.body).append($iframe);
+            $form[0].submit();
+            $iframe.remove();
+        };
+	var projectName = getParameterByName("project");
+    var type = getParameterByName("type");
+	var puuid = getParameterByName("puuid");
+	var dateList = [];
+	var userList = [];
+	var issueList = [];
+    function loadZipInfo(){
+    	var project;
+
+    	$.post("GetDownloadList?type=" + type+"&project="+projectName+"&puuid="+puuid,null,function (data) {
+            var downloadList = $.parseJSON(data);
+            //alert(project.name)
+            var i;
+
+            for (i = 0; i < downloadList.length; i++) {
+            	htmlString = "<button type=\"button\" class=\"btn btn-primary col-sm-2\"  onclick=\"DownLoadFile('"+downloadList[i].path+"');\">"+downloadList[i].mlist+"</button>";
+                //htmlString = "<li class=\"list-group-item\"><a href='DownloadZip?filepath='" +  + "\"'>" +  + "</a></li>";
+                $("#downloadList").append(htmlString);
+            }
+        });
+    }
+    loadZipInfo();
+	require.config({
+		paths: {
+			echarts: 'http://echarts.baidu.com/build/dist'
+		}
+	});
+
+	// 使用
+	require(
+		[
+			'echarts',
+			'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+		],
+		function (ec) {
+			// 基于准备好的dom，初始化echarts图表
+			var myChart = ec.init(document.getElementById('main'));
+
+			var option = {
+				tooltip: {
+					show: true
+				},
+				legend: {
+					data:['reporterNums']
+				},
+				xAxis : [
+					{
+						type : 'category',
+						data : dateList
+					}
+				],
+				yAxis : [
+					{
+						type : 'value'
+					}
+				],
+				series : [
+					{
+						"name":"reporter",
+						"type":"bar",
+						"data":userList
+					}
+				]
+			};
+
+            var myChart2 = ec.init(document.getElementById('main2'));
+
+            var option2 = {
+                tooltip: {
+                    show: true
+                },
+                legend: {
+                    data:['issueNums']
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : dateList
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series : [
+                    {
+                        "name":"issue",
+                        "type":"bar",
+                        "data":issueList
+                    }
+                ]
+            };
+
+			// 为echarts对象加载数据
+			myChart.setOption(option);
+            myChart2.setOption(option2);
+		}
+	);
+    </script>
+</body>
+</html>
